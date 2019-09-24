@@ -1,0 +1,38 @@
+{
+  "name": "ccws",
+  "version": "0.0.1",
+  "description": "crypto currency websocket sdk",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "node ./scripts/runTest.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iamweilee/ccws.git"
+  },
+  "keywords": [
+    "crypto",
+    "currency",
+    "websocket",
+    "nodejs",
+    "api"
+  ],
+  "author": "weilee",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/iamweilee/ccws/issues"
+  },
+  "homepage": "https://github.com/iamweilee/ccws#readme",
+  "dependencies": {
+    "crc-32": "^1.2.0",
+    "crypto-js": "^3.1.9-1",
+    "https-proxy-agent": "^2.2.2",
+    "lodash": "^4.17.15",
+    "pako": "^1.0.10",
+    "socks-proxy-agent": "^4.0.2",
+    "ws": "^7.1.2"
+  },
+  "devDependencies": {
+    "shelljs": "^0.8.3"
+  }
+}
