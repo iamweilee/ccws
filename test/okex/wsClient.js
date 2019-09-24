@@ -20,8 +20,8 @@ function loginSuccess() {
 
 //websocket 返回消息
 function wsMessage(data){
-    console.log(`!!! websocket message =${data}`);
-    var obj = JSON.parse(data);
+    console.log(`!!! websocket message =${JSON.stringify(data)}`);
+    var obj = data;
     var eventType = obj.event;
     if (eventType == 'login'){
         //登录消息

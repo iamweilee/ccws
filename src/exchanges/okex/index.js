@@ -1,12 +1,15 @@
 const _ = require('lodash');
 const crc32 = require('crc-32');
+const pako = require('pako');
 const CryptoJS = require('crypto-js');
 const BaseWebsocketClient = require('../BaseWebsocketClient');
 
 class WebsocketClient extends BaseWebsocketClient {
 
   constructor(data = {}) {
-    super(_.assign({}, { websocketUrl: 'wss://real.okex.com:8443/ws/v3', pingInterval: 5000 }, data));
+    super(_.assign({}, { websocketUrl: 'wss://real.okex.com:8443/ws/v3' }, data));
+    this.pingTimer = null;
+    this.pingInterval = data.pingInterval || 5000; // ping服务器的时间间隔, 单位: ms
   }
 
   login() {
@@ -30,6 +33,61 @@ class WebsocketClient extends BaseWebsocketClient {
 
   unsubscribe(...args) {
     this.send({ op: 'unsubscribe', args });
+  }
+
+  onOpen() {
+    console.log(`Connected to ${this.websocketUrl}`);
+    this.initPingTimer();
+    this.emit('open');
+  }
+
+  onClose() {
+    console.log(`Websocket connection is closed.code=${code},reason=${reason}`);
+    this.socket = null;
+    if (this.pingTimer) {
+      clearInterval(this.pingTimer);
+      this.pingTimer = null;
+    }
+    this.emit('close');
+  }
+
+  onMessage(data) {
+    this.resetPingTimer();
+    data = pako.inflateRaw(data, { to: 'string' });
+    if (data === 'pong') {
+      return;
+    }
+    else {
+      data = JSON.parse(data);
+    }
+
+    this.emit('message', data);
+  }
+
+  close() {
+    if (this.socket) {
+      console.log(`Closing websocket connection...`);
+      this.socket.close();
+      if (this.pingTimer) {
+        clearInterval(this.pingTimer);
+        this.pingTimer = null;
+      }
+      this.socket = null;
+    }
+  }
+
+  initPingTimer() {
+    this.pingTimer = setInterval(() => {
+      this.socket && this.socket.send('ping');
+    }, this.pingInterval);
+  }
+
+  resetPingTimer() {
+    if (this.pingTimer) {
+      clearInterval(this.pingTimer);
+      this.pingTimer = null;
+      this.initPingTimer();
+    }
   }
   
   // 循环冗余校验, 目前该算法有问题

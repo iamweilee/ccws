@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const moment = require('moment');
+const pako = require('pako');
 const CryptoJS = require('crypto-js');
 const BaseWebsocketClient = require('../BaseWebsocketClient');
 
@@ -24,7 +25,6 @@ class WebsocketClient extends BaseWebsocketClient {
     //计算签名
     data.Signature = this.signSha('GET', this.host, this.uri, data);
     data.op = 'auth';
-    // console.log(data);
     this.send(data);
   }
 

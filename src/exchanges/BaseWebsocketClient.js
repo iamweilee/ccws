@@ -3,14 +3,13 @@
  */
 const { EventEmitter } = require('events');
 const WebSocket = require('ws');
-const pako = require('pako');
 const SocksProxyAgent = require('socks-proxy-agent');
 const HttpsProxyAgent = require('https-proxy-agent');
 const { MethodNotImplementError } = require('../util/error');
 
 class BaseWebsocketClient extends EventEmitter {
   
-  constructor({ apiKey, secretKey, passphrase, websocketUrl, pingInterval = 5000, proxy = {} }) {
+  constructor({ apiKey, secretKey, passphrase, websocketUrl, proxy = {} }) {
     super();
 
     this.apiKey = apiKey;
@@ -18,12 +17,9 @@ class BaseWebsocketClient extends EventEmitter {
     this.passphrase = passphrase;
 
     this.websocketUrl = websocketUrl;
-    this.pingInterval = pingInterval; // ping服务器的时间间隔, 单位: ms
     this.proxy = proxy;
-
     this.socket = null;
-    this.pingTimer = null;
-
+    
     this.connect();
   }
 
@@ -70,60 +66,23 @@ class BaseWebsocketClient extends EventEmitter {
   }
 
   onOpen() {
-    console.log(`Connected to ${this.websocketUrl}`);
-    this.initPingTimer();
-    this.emit('open');
+    throw new MethodNotImplementError('onOpen not implement');
   }
 
   onClose() {
-    console.log(`Websocket connection is closed.code=${code},reason=${reason}`);
-    this.socket = null;
-    if (this.pingTimer) {
-      clearInterval(this.pingTimer);
-      this.pingTimer = null;
-    }
-    this.emit('close');
+    throw new MethodNotImplementError('onClose not implement');
   }
 
   onMessage(data) {
-    this.resetPingTimer();
-    if (typeof data !== 'string') {
-      data = pako.inflateRaw(data, { to: 'string' });
-    }
-    if (data === 'pong') {
-      return;
-    }
-    this.emit('message', data);
+    throw new MethodNotImplementError('onMessage not implement');
   }
 
   send(messageObject) {
     this.socket.send(JSON.stringify(messageObject));
   }
 
-  initPingTimer() {
-    this.pingTimer = setInterval(() => {
-      this.socket && this.socket.send('ping');
-    }, this.pingInterval);
-  }
-
-  resetPingTimer() {
-    if (this.pingTimer) {
-      clearInterval(this.pingTimer);
-      this.pingTimer = null;
-      this.initPingTimer();
-    }
-  }
-
   close() {
-    if (this.socket) {
-      console.log(`Closing websocket connection...`);
-      this.socket.close();
-      if (this.pingTimer) {
-        clearInterval(this.pingTimer);
-        this.pingTimer = null;
-      }
-      this.socket = null;
-    }
+    throw new MethodNotImplementError('close not implement');
   }
 
 }
