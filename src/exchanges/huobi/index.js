@@ -28,12 +28,12 @@ class WebsocketClient extends BaseWebsocketClient {
     this.send(data);
   }
 
-  subscribe(...args) {
-    this.send({ op: 'sub', args });
+  subscribe(args) {
+    this.send({ op: 'sub', ...args });
   }
 
-  unsubscribe(...args) {
-    this.send({ op: 'unsub', args });
+  unsubscribe(args) {
+    this.send({ op: 'unsub', ...args });
   }
   
   onOpen() {

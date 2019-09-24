@@ -5,7 +5,10 @@ let wss = new ws.okex(apiConf);
 
 wss.on('open', data=>{
     console.log("websocket open!!!");
-    wss.subscribe('swap/depth:BTC-USD-SWAP');
+    wss.subscribe({
+        cid:"111",
+        topic:"accounts"
+    });
    
 });
 wss.on('message', wsMessage);
