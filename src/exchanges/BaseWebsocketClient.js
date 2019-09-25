@@ -19,8 +19,6 @@ class BaseWebsocketClient extends EventEmitter {
     this.websocketUrl = websocketUrl;
     this.proxy = proxy;
     this.socket = null;
-    
-    this.connect();
   }
 
   connect() {

@@ -3,6 +3,8 @@ const { apiConf } = require('./config');
 
 let wss = new ws.huobi(apiConf);
 
+wss.connect();
+
 wss.on('open', data=>{
     console.log("websocket open!!!");
     wss.send({
