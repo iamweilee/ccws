@@ -7,10 +7,7 @@ wss.connect();
 
 wss.on('open', data=>{
     console.log("websocket open!!!");
-    wss.send({
-        "sub": "market.btcusdt.depth.step0",
-        "id": "id1"
-    });
+    wss.subscribe('market.btcusdt.depth.step0', 'id1');
 });
 wss.on('message', wsMessage);
 
