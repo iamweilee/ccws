@@ -57,10 +57,8 @@ class WebsocketClient extends BaseWebsocketClient {
     if (data === 'pong') {
       return;
     }
-    else {
-      data = JSON.parse(data);
-    }
-
+    
+    data = JSON.parse(data);
     this.emit('message', data);
   }
 

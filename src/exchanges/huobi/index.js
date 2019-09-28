@@ -57,6 +57,7 @@ class WebsocketClient extends BaseWebsocketClient {
       this.send({
         pong: msg.ping
       });
+      return;
     }
 
     this.emit('message', msg);
