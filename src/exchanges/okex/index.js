@@ -27,12 +27,12 @@ class WebsocketClient extends BaseWebsocketClient {
     this.socket.send(request);
   }
 
-  subscribe(...args) {
-    this.send({ op: 'subscribe', args });
+  subscribe(req) {
+    this.send(req);
   }
 
-  unsubscribe(...args) {
-    this.send({ op: 'unsubscribe', args });
+  unsubscribe(req) {
+    this.send(req);
   }
 
   onOpen() {
@@ -41,7 +41,7 @@ class WebsocketClient extends BaseWebsocketClient {
     this.emit('open');
   }
 
-  onClose() {
+  onClose(code, reason) {
     console.log(`Websocket connection is closed.code=${code},reason=${reason}`);
     this.socket = null;
     if (this.pingTimer) {
@@ -54,12 +54,21 @@ class WebsocketClient extends BaseWebsocketClient {
   onMessage(data) {
     this.resetPingTimer();
     data = pako.inflateRaw(data, { to: 'string' });
-    if (data === 'pong') {
-      return;
+    if (data !== 'pong') {
+      data = JSON.parse(data);
+      if (data.event !== 'login') {
+        this.emit('message', data);
+      }
+      else {
+        if (data.success) {
+          this.emit('loginSuccess', data);
+        }
+        else {
+          console.log('Websocket login Failed.');
+          this.emit('loginFailed', data);
+        }
+      }
     }
-    
-    data = JSON.parse(data);
-    this.emit('message', data);
   }
 
   close() {
@@ -75,7 +84,7 @@ class WebsocketClient extends BaseWebsocketClient {
   }
 
   initPingTimer() {
-    this.pingTimer = setInterval(() => {
+    this.pingTimer = setTimeout(() => {
       this.socket && this.socket.send('ping');
     }, this.pingInterval);
   }

@@ -8,35 +8,25 @@ wss.connect();
 wss.on('open', data=>{
     console.log("websocket open!!!");
     wss.login();
-    wss.subscribe('swap/depth:BTC-USD-SWAP');
-   
+    // wss.subscribe({ op: 'subscribe', args: ['swap/depth:BTC-USD-SWAP']});
 });
 wss.on('message', wsMessage);
-
+wss.on('loginSuccess', loginSuccess);
 
 function loginSuccess() {
     console.log('login success')
     //wss.subscribe('swap/account:BTC-USD-SWAP');
     //wss.unsubscribe('swap/position:BTC-USD-SWAP');
+    // wss.subscribe({"op": "subscribe", "args": ["futures/position:BTC-USD-191101"]});
+    // wss.subscribe({"op": "subscribe", "args": ["futures/account:BTC"]});
+    wss.subscribe({"op": "subscribe", "args": ["futures/order:BTC-USD-191101"]});
+    
 }
 
 //websocket 返回消息
 function wsMessage(data){
     console.log(`!!! websocket message =${JSON.stringify(data)}`);
-    var obj = data;
-    var eventType = obj.event;
-    if (eventType == 'login'){
-        //登录消息
-        if (obj.success == true){
-           loginSuccess();
-        }
-    }
-    else if (eventType == undefined){
-        //行情消息相关
-        tableMsg(obj);
-        // let checked = wss.checksum(obj);
-        // console.log('checksum result: ', checked);
-    }
+    tableMsg(data);
 }
 
 function tableMsg(marketData) {

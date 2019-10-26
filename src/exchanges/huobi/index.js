@@ -7,9 +7,11 @@ const BaseWebsocketClient = require('../BaseWebsocketClient');
 class WebsocketClient extends BaseWebsocketClient {
 
   constructor(data = {}) {
-    super(_.assign({}, { websocketUrl: 'wss://api.huobi.pro/ws', pingInterval: 5000 }, data));
-    this.host = "api.huobi.pro";
-    this.uri = "/ws/v1"
+    data = _.assign({}, { websocketUrl: 'wss://www.hbdm.com/ws' }, data);
+    super(data);
+    const pathList = data.websocketUrl.match(/wss?:\/\/([^/]+)((?:\/.+)*)/);
+    this.host = pathList[1];
+    this.uri = pathList[2];
   }
 
   login() {
@@ -24,25 +26,26 @@ class WebsocketClient extends BaseWebsocketClient {
 
     //计算签名
     data.Signature = this.signSha('GET', this.host, this.uri, data);
+    // data.Signature = this.signSha('GET', this.host, this.uri);
     data.op = 'auth';
+    data.type = 'api';
     this.send(data);
   }
 
-  subscribe(channel, id) {
-    this.send({ sub: channel, id });
+  subscribe(req) {
+    this.send(req);
   }
 
-  unsubscribe(channel, id) {
-    this.send({ unsub: channel, id });
+  unsubscribe(req) {
+    this.send(req);
   }
   
   onOpen() {
     console.log(`Connected to ${this.websocketUrl}`);
-    this.login();
     this.emit('open');
   }
 
-  onClose() {
+  onClose(code, reason) {
     console.log(`Websocket connection is closed.code=${code},reason=${reason}`);
     this.socket = null;
     this.emit('close');
@@ -53,14 +56,35 @@ class WebsocketClient extends BaseWebsocketClient {
       to: 'string'
     });
     let msg = JSON.parse(text);
-    if (msg.ping) {
-      this.send({
-        pong: msg.ping
-      });
-      return;
-    }
 
-    this.emit('message', msg);
+    if (msg.op !== 'ping') {
+      if (msg.op !== 'auth') {
+        this.emit('message', msg);
+      }
+      else {
+        if (msg['err-code'] === 0) {
+          this.emit('loginSuccess', msg);
+        }
+        else {
+          console.log('Websocket login Failed.');
+          this.emit('loginFailed', msg);
+        }
+      }
+    }
+    else {
+      this.send({
+        op: 'pong',
+        ts: msg.ts
+      });
+    }
+  }
+
+  close() {
+    if (this.socket) {
+      console.log(`Closing websocket connection...`);
+      this.socket.close();
+      this.socket = null;
+    }
   }
 
 /**
@@ -71,7 +95,7 @@ class WebsocketClient extends BaseWebsocketClient {
  * @param data
  * @returns {*|string}
  */
-  signSha(method, host, path, data) {
+  signSha(method, host, path, data = {}) {
     const pars = [];
 
     //将参数值 encode

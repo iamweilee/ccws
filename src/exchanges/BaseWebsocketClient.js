@@ -55,11 +55,11 @@ class BaseWebsocketClient extends EventEmitter {
     throw new MethodNotImplementError('login not implement');
   }
 
-  subscribe(...args) {
+  subscribe(req) {
     throw new MethodNotImplementError('subscribe not implement');
   }
 
-  unsubscribe(...args) {
+  unsubscribe(req) {
     throw new MethodNotImplementError('unsubscribe not implement');
   }
 
