@@ -7,8 +7,8 @@ wss.connect();
 
 wss.on('open', data=>{
     console.log("websocket open!!!");
-    wss.login();
-    // wss.subscribe({ op: 'subscribe', args: ['swap/depth:BTC-USD-SWAP']});
+    // wss.login();
+    wss.subscribe({ op: 'subscribe', args: ['swap/depth:BTC-USD-SWAP']});
 });
 wss.on('message', wsMessage);
 wss.on('loginSuccess', loginSuccess);

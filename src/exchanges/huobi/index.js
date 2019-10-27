@@ -58,10 +58,15 @@ class WebsocketClient extends BaseWebsocketClient {
     let msg = JSON.parse(text);
 
     if (msg.op !== 'ping') {
-      if (msg.op !== 'auth') {
+      if (msg.op !== 'auth' && !msg.ping) {
         this.emit('message', msg);
       }
-      else {
+      else if (msg.ping) {
+        this.send({
+          pong: msg.ping
+        });
+      }
+      else if (msg.op === 'auth') {
         if (msg['err-code'] === 0) {
           this.emit('loginSuccess', msg);
         }

@@ -1,8 +1,8 @@
 const ws = require('../../src');
 const { apiConf } = require('./config');
 
-let wss = new ws.huobi({ ...apiConf, websocketUrl: apiConf.signRequiredWebsocketUrl });
-
+// let wss = new ws.huobi({ ...apiConf, websocketUrl: apiConf.signRequiredWebsocketUrl });
+let wss = new ws.huobi(apiConf);
 wss.connect();
 
 wss.on('open', data=>{
@@ -12,10 +12,10 @@ wss.on('open', data=>{
     //   "sub": "market.BTC_CQ.depth.step0",
     //   "id": "id1"
     // });
-    // wss.subscribe({
-    //   "sub": "market.BTC_CQ.kline.1min",
-    //   "id": "id1"
-    // });
+    wss.subscribe({
+      "sub": "market.BTC_CQ.kline.1min",
+      "id": "id1"
+    });
     // wss.subscribe({
     //   "sub": "market.BTC_CQ.detail",
     //   "id": "id6"
