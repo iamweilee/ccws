@@ -48,7 +48,7 @@ class WebsocketClient extends BaseWebsocketClient {
   onClose(code, reason) {
     console.log(`Websocket connection is closed.code=${code},reason=${reason}`);
     this.socket = null;
-    this.emit('close');
+    this.emit('close', {code, reason});
   }
 
   onMessage(data) {

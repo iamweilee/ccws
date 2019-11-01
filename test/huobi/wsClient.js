@@ -38,9 +38,8 @@ function loginSuccess() {
     //wss.subscribe('swap/account:BTC-USD-SWAP');
     //wss.unsubscribe('swap/position:BTC-USD-SWAP');
     wss.subscribe({
-      "op": "sub",
-      "cid": "40sG903yz80oDFWr",
-      "topic": "orders.btc"
+        "sub": "market.BTC_CQ.depth.step0",
+        "id": "id1"
     });
 }
 

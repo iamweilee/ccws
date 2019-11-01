@@ -1,6 +1,6 @@
 {
   "name": "ccws",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "crypto currency websocket sdk",
   "main": "src/index.js",
   "scripts": {
@@ -34,7 +34,7 @@
     "pako": "^1.0.10",
     "socks-proxy-agent": "^4.0.2",
     "superagent": "^5.1.0",
-    "ws": "^7.1.2"
+    "ws": "^7.2.0"
   },
   "devDependencies": {
     "shelljs": "^0.8.3"

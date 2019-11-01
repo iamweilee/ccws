@@ -48,7 +48,7 @@ class WebsocketClient extends BaseWebsocketClient {
       clearInterval(this.pingTimer);
       this.pingTimer = null;
     }
-    this.emit('close');
+    this.emit('close', {code, reason});
   }
 
   onMessage(data) {

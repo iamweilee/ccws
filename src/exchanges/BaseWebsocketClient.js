@@ -67,7 +67,7 @@ class BaseWebsocketClient extends EventEmitter {
     throw new MethodNotImplementError('onOpen not implement');
   }
 
-  onClose() {
+  onClose(code, reason) {
     throw new MethodNotImplementError('onClose not implement');
   }
 

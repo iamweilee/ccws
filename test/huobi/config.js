@@ -1,6 +1,6 @@
 exports.apiConf = {
-  websocketUrl: 'wss://api.huobi.pro/ws', // wss://www.btcgateway.pro/ws,
-  signRequiredWebsocketUrl: 'wss://api.huobi.pro/ws/v1', // Websocket资产及订单 // wss://api.btcgateway.pro/notification
+  websocketUrl: 'wss://www.hbdm.com/ws', // wss://www.btcgateway.pro/ws,
+  signRequiredWebsocketUrl: 'wss://api.hbdm.com/notification', // Websocket资产及订单 // wss://api.btcgateway.pro/notification
   apiKey: 'ghxertfvbf-86725f92-9a49ea6c-e6e72',
   secretKey: 'e7551dae-873a7992-2711b070-b685c',
   proxy: {
