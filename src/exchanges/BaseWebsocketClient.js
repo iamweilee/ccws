@@ -48,6 +48,7 @@ class BaseWebsocketClient extends EventEmitter {
 
     this.socket.on('open', () => this.onOpen());
     this.socket.on('close', (code, reason) => this.onClose(code, reason));
+    this.socket.on('error', err => this.onError(err));
     this.socket.on('message', data => this.onMessage(data));
   }
 
@@ -69,6 +70,11 @@ class BaseWebsocketClient extends EventEmitter {
 
   onClose(code, reason) {
     throw new MethodNotImplementError('onClose not implement');
+  }
+
+  onError(err) {
+    console.log(`Error on Websocket url %s: %o`, this.websocketUrl, err);
+    this.emit('error', err);
   }
 
   onMessage(data) {
