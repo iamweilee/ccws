@@ -6,7 +6,7 @@ server.on('connection', function connection(socket) {
   console.log('ws server connected.');
   socket.on('message', function incoming(message) {
     let data = parse(message);
-    console.log('ws server received: %j', data);
+    console.log('ws server received: %j, timeDiff: %s', data, Data.now() - data.clientTimestamp);
     socket.send(stringify({ data: { text: 'Hello Client' }, serverTimestamp: Date.now(), clientTimestamp: data.clientTimestamp }));
   });
 

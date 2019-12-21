@@ -11,14 +11,18 @@ ws.on('close', function close() {
   console.log('ws client disconnected');
 });
 
-ws.on('message', function incoming(message) {
+ws.on('message', async function incoming(message) {
   let data = parse(message);
-  console.log(`ws client receive message: %j, timeDelay: %s`, data, Date.now() - data.clientTimestamp);
-
-  setTimeout(function timeout() {
-    ws.send(stringify({ data: { text: 'Hello Server' }, clientTimestamp: Date.now() }));
-  }, 10000);
+  console.log(`ws client receive message: %j, 2d timeDelay: %s, 1d timeDelay: %s`, data, Date.now() - data.clientTimestamp, Date.now() - data.serverTimestamp);
+  await sleep(10000);
+  ws.send(stringify({ data: { text: 'Hello Server' }, clientTimestamp: Date.now() }));
 });
+
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
 
 function stringify(data) {
   return JSON.stringify(data);
