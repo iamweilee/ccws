@@ -15,7 +15,7 @@ ws.on('message', function incoming(message) {
   let data = parse(message);
   console.log(`ws client receive message: %j, timeDelay: %s`, data, Date.now() - data.clientTimestamp);
 
-  setInterval(function timeout() {
+  setTimeout(function timeout() {
     ws.send(stringify({ data: { text: 'Hello Server' }, clientTimestamp: Date.now() }));
   }, 10000);
 });
