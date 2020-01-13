@@ -1,9 +1,9 @@
-const bitmex = require('./exchanges/bitmex');
 const huobi = require('./exchanges/huobi');
 const okex = require('./exchanges/okex');
+const binance = require('./exchanges/binance');
 
 module.exports = {
-  bitmex,
   huobi,
-  okex
+  okex,
+  binance
 };
