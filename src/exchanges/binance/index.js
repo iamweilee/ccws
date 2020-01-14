@@ -5,7 +5,7 @@ const BaseWebsocketClient = require('../BaseWebsocketClient');
 class WebsocketClient extends BaseWebsocketClient {
 
   constructor(data = {}) {
-    data = _.assign({}, { websocketUrl: 'wss://fstream.binance.com' }, data);
+    data = _.assign({}, { websocketUrl: 'wss://stream.binance.com:9443/ws' }, data);
     super(data);
     const pathList = data.websocketUrl.match(/wss?:\/\/([^/]+)((?:\/.+)*)/);
     this.host = pathList[1];
