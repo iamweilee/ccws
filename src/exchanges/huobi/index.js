@@ -1,7 +1,8 @@
 const _ = require('lodash');
 const moment = require('moment');
 const pako = require('pako');
-const CryptoJS = require('crypto-js');
+// const CryptoJS = require('crypto-js');
+const crypto = require('crypto');
 const BaseWebsocketClient = require('../BaseWebsocketClient');
 
 class WebsocketClient extends BaseWebsocketClient {
@@ -115,9 +116,11 @@ class WebsocketClient extends BaseWebsocketClient {
     const meta = [method, host, path, p].join('\n');
 
     //用HmacSHA256 进行加密
-    const hash = CryptoJS.HmacSHA256(meta, this.secretKey);
+    // const hash = CryptoJS.HmacSHA256(meta, this.secretKey);
+    const hmac = crypto.createHmac('sha256', this.secretKey);
     // 按Base64 编码 字符串
-    const Signature = CryptoJS.enc.Base64.stringify(hash);
+    // const Signature = CryptoJS.enc.Base64.stringify(hash);
+    const Signature = hmac.update(meta).digest('base64');
     // console.log(p);
     return Signature;
   }

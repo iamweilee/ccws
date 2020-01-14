@@ -1,7 +1,8 @@
 const _ = require('lodash');
 const crc32 = require('crc-32');
 const pako = require('pako');
-const CryptoJS = require('crypto-js');
+// const CryptoJS = require('crypto-js');
+const crypto = require('crypto');
 const BaseWebsocketClient = require('../BaseWebsocketClient');
 
 class WebsocketClient extends BaseWebsocketClient {
@@ -15,13 +16,15 @@ class WebsocketClient extends BaseWebsocketClient {
   login() {
     const timestamp = Date.now() / 1000;
     const str = timestamp + 'GET/users/self/verify';
+    const hmac = crypto.createHmac('sha256', this.secretKey);
     const request = JSON.stringify({
       op: 'login',
       args: [
         this.apiKey,
         this.passphrase,
         timestamp.toString(),
-        CryptoJS.enc.Base64.stringify(CryptoJS.HmacSHA256(str, this.secretKey))
+        hmac.update(str).digest('base64')
+        // CryptoJS.enc.Base64.stringify(CryptoJS.HmacSHA256(str, this.secretKey))
       ]
     });
     this.socket.send(request);
@@ -97,7 +100,6 @@ class WebsocketClient extends BaseWebsocketClient {
     }
   }
   
-  // 循环冗余校验, 目前该算法有问题
   checksum(data) {
     if (data == null) {
       return false;
@@ -112,14 +114,16 @@ class WebsocketClient extends BaseWebsocketClient {
       for (let i = 0; i < 25; i++) {
         if (item.bids[i]) {
           const bid = item.bids[i];
-          buff.push(...bid);
+          buff.push(bid[0]);
+          buff.push(bid[1]);
         }
         if (item.asks[i]) {
           const ask = item.asks[i];
-          buff.push(...ask);
+          buff.push(ask[0]);
+          buff.push(ask[1]);
         }
       }
-      let checksum = crc32.str(buff.join(':'));
+      const checksum = crc32.str(buff.join(':'));
       if (checksum === item.checksum) {
         return true;
       }
